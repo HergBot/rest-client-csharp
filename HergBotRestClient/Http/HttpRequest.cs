@@ -8,15 +8,14 @@ namespace HergBot.RestClient.Http
 {
     public class HttpRequest
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
-
-        private static string _currentBearerToken;
+        private IHttpClient _httpClient;
 
         private string _requestUrl;
 
-        public HttpRequest(string bearerToken, string url)
+        public HttpRequest(IHttpClient client, string bearerToken, string url)
         {
-            SetBearerToken(bearerToken);
+            _httpClient = client;
+            _httpClient.SetBearerToken(bearerToken);
             _requestUrl = url;
         }
 
@@ -44,22 +43,14 @@ namespace HergBot.RestClient.Http
                     throw new NotImplementedException($"HTTP Verb not implemented: {verb.ToString()}");
             }
 
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            //string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            string responseBody = string.Empty;
             return new HttpResponse(
                 fullRequestUrl,
                 responseMessage.StatusCode,
                 responseBody,
                 verb
             );
-        }
-
-        private void SetBearerToken(string bearerToken)
-        {
-            if (_currentBearerToken != bearerToken)
-            {
-                _currentBearerToken = bearerToken;
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-            }
         }
 
         private string ConstructParameterString(IHttpRequestParameter parameter)
