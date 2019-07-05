@@ -28,9 +28,9 @@ namespace HergBot.RestClient.Http
 
         private bool IsRequestSuccessful(HttpStatusCode statusCode)
         {
-            // All 2xx status codes (200-299) are consider successful
-            int code = (int)statusCode;
-            return (code / 100) != 2;
+            // All 1xx, 2xx, and 3xx status codes (100-399) are considered successful
+            int codeGroup = (int)statusCode / 100;
+            return codeGroup == 1 || codeGroup == 2 || codeGroup == 3;
         }
     }
 }

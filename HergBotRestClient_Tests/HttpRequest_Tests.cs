@@ -19,27 +19,54 @@ namespace HergBotRestClient_Tests
 
         private const string VALID_AUTH_TOKEN = "1234567890";
 
-        [Test]
-        public async Task Test()
+        private const string TEST_RESPONSE = "{\"response\": \"test\"}";
+
+        private Mock<IHttpClient> _mockHttpClient;
+
+        private HttpRequest _testRequest;
+
+        [SetUp]
+        public void SetUp()
         {
-            // Mock out the GetAsync method for the HttpClient
-            Mock<HttpClient> httpClientMock = new Mock<HttpClient>();
-            httpClientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
-            HttpRequest test = new HttpRequest(VALID_AUTH_TOKEN, VALID_URL);
-            HttpResponse response = await test.Send(HttpVerb.GET);
-            Console.WriteLine(response);
+            _mockHttpClient = new Mock<IHttpClient>();
+            _testRequest = new HttpRequest(_mockHttpClient.Object, VALID_AUTH_TOKEN, VALID_URL);
         }
 
-        private void Mock200()
+        [Test]
+        public async Task Get_Empty_200()
         {
-            Mock<HttpMessageHandler> mockMessageHandler = new Mock<HttpMessageHandler>();
-            mockMessageHandler
-                .Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(testContent)
-                });
+            MockResponse(HttpVerb.GET, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.GET);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        private void MockResponse(HttpVerb verb, HttpStatusCode status, string response)
+        {
+            HttpResponseMessage responseMessage = new HttpResponseMessage(status);
+            responseMessage.Content = new StringContent(response);
+
+            switch(verb)
+            {
+                case HttpVerb.DELETE:
+                    _mockHttpClient.Setup(x => x.DeleteAsync(It.IsAny<string>()))
+                        .ReturnsAsync(responseMessage);
+                    break;
+                case HttpVerb.GET:
+                    _mockHttpClient.Setup(x => x.GetAsync(It.IsAny<string>()))
+                        .ReturnsAsync(responseMessage);
+                    break;
+                case HttpVerb.POST:
+                    _mockHttpClient.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<HttpContent>()))
+                        .ReturnsAsync(responseMessage);
+                    break;
+                case HttpVerb.PUT:
+                    _mockHttpClient.Setup(x => x.PutAsync(It.IsAny<string>(), It.IsAny<HttpContent>()))
+                        .ReturnsAsync(responseMessage);
+                    break;
+                default:
+                    throw new NotImplementedException($"HTTP Verb '{verb.ToString()}' not implemented");
+            }
         }
     }
 }
