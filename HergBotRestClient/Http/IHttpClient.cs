@@ -17,5 +17,7 @@ namespace HergBot.RestClient.Http
         Task<HttpResponseMessage> PutAsync(string url, HttpContent content);
 
         void SetBearerToken(string token);
+
+        string GetBearerToken();
     }
 }
