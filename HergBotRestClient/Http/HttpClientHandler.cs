@@ -32,5 +32,15 @@ namespace HergBot.RestClient.Http
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+
+        public string GetBearerToken()
+        {
+            if (_client.DefaultRequestHeaders.Authorization == null)
+            {
+                return null;
+            }
+
+            return _client.DefaultRequestHeaders.Authorization.Parameter;
+        }
     }
 }

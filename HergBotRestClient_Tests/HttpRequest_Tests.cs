@@ -11,7 +11,7 @@ using HergBot.RestClient.Http;
 using Moq;
 using NUnit.Framework;
 
-namespace HergBotRestClient_Tests
+namespace HergBot.RestClient_Tests
 {
     public class HttpRequest_Tests
     {
