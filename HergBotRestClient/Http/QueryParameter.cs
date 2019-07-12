@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace HergBotRestClient.Http
+namespace HergBot.RestClient.Http
 {
-    class QueryParameter
+    public class QueryParameter : DataParameter, IHttpRequestParameter
     {
+        public string Format()
+        {
+            string[] formattedParameters = _keyValuePairs.Select(x => $"{x.Key}={x.Value}").ToArray();
+            return $"?{string.Join("&", formattedParameters)}";
+        }
     }
 }

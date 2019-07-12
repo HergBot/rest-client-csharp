@@ -2,9 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HergBotRestClient.Http
+namespace HergBot.RestClient.Http
 {
-    class UniqueIdParameter
+    public class UniqueIdParameter : IHttpRequestParameter
     {
+        private string _uniqueId;
+
+        public UniqueIdParameter(string uid)
+        {
+            _uniqueId = uid;
+        }
+
+        public string Format()
+        {
+            return $"/{_uniqueId}";
+        }
     }
 }
