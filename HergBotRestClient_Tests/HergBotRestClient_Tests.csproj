@@ -61,10 +61,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataParameter_Tests.cs" />
     <Compile Include="HttpClientHandler_Tests.cs" />
     <Compile Include="HttpRequest_Tests.cs" />
     <Compile Include="HttpResponse_Tests.cs" />
+    <Compile Include="JsonBodyParameter_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryParameter_Tests.cs" />
+    <Compile Include="UniqueIdParameter_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
