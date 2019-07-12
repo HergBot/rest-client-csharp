@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HergBotRestClient.Http
+namespace HergBot.RestClient.Http
 {
-    class JsonBodyParameter
+    public class JsonBodyParameter : DataParameter, IHttpRequestParameter
     {
+        public string Format()
+        {
+            return JsonConvert.SerializeObject(_keyValuePairs);
+        }
     }
 }
