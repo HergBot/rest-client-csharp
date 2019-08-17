@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HergBot.RestClient.Http
 {
@@ -10,6 +8,14 @@ namespace HergBot.RestClient.Http
 
         public UniqueIdParameter(string uid)
         {
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                if (uid == null)
+                {
+                    throw new ArgumentNullException("Unique Id cannot be null");
+                }
+                throw new ArgumentException("Unique Id cannot be empty string or whitespace");
+            }
             _uniqueId = uid;
         }
 
