@@ -21,6 +21,10 @@ namespace HergBot.RestClient_Tests
 
         private const string TEST_RESPONSE = "{\"response\": \"test\"}";
 
+        private const string TEST_KEY = "test_key";
+
+        private const string TEST_VALUE = "test_value";
+
         private Mock<IHttpClient> _mockHttpClient;
 
         private HttpRequest _testRequest;
@@ -33,12 +37,72 @@ namespace HergBot.RestClient_Tests
         }
 
         [Test]
-        public async Task Get_Empty_200()
+        public async Task Send_GetRequest_ReturnsResponse()
         {
             MockResponse(HttpVerb.GET, HttpStatusCode.OK, TEST_RESPONSE);
             HttpResponse response = await _testRequest.Send(HttpVerb.GET);
             Assert.IsTrue(response.Success);
             Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_GetQueryRequest_ReturnsReponse()
+        {
+            QueryParameter query = new QueryParameter();
+            query.AddValue(TEST_KEY, TEST_VALUE);
+            MockResponse(HttpVerb.GET, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.GET, query);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_GetUidRequest_ReturnsReponse()
+        {
+            UniqueIdParameter uid = new UniqueIdParameter(TEST_VALUE);
+            MockResponse(HttpVerb.GET, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.GET, uid);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_PostRequest_ReturnsResponse()
+        {
+            JsonBodyParameter body = new JsonBodyParameter();
+            body.AddValue(TEST_KEY, TEST_VALUE);
+            MockResponse(HttpVerb.POST, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.POST, null, body);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_PutRequest_ReturnsResponse()
+        {
+            JsonBodyParameter body = new JsonBodyParameter();
+            UniqueIdParameter uid = new UniqueIdParameter(TEST_VALUE);
+            body.AddValue(TEST_KEY, TEST_VALUE);
+            MockResponse(HttpVerb.PUT, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.PUT, uid, body);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_DeleteRequest_ReturnsResponse()
+        {
+            UniqueIdParameter uid = new UniqueIdParameter(TEST_VALUE);
+            MockResponse(HttpVerb.DELETE, HttpStatusCode.OK, TEST_RESPONSE);
+            HttpResponse response = await _testRequest.Send(HttpVerb.DELETE, uid);
+            Assert.IsTrue(response.Success);
+            Assert.AreEqual(HttpStatusCode.OK, response.Status);
+        }
+
+        [Test]
+        public async Task Send_PatchRequest_ReturnsResponse()
+        {
+            Assert.ThrowsAsync<NotImplementedException>(() => _testRequest.Send(HttpVerb.PATCH));
         }
 
         private void MockResponse(HttpVerb verb, HttpStatusCode status, string response)

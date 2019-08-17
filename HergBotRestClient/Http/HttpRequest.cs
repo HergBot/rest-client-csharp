@@ -22,7 +22,7 @@ namespace HergBot.RestClient.Http
         public async Task<HttpResponse> Send(HttpVerb verb, IHttpRequestParameter urlParameter = null, IHttpRequestParameter bodyParameter = null)
         {
             string fullRequestUrl = $"{_requestUrl}{ConstructParameterString(urlParameter)}";
-            HttpContent content = new StringContent(ConstructParameterString(urlParameter));
+            HttpContent content = new StringContent(ConstructParameterString(bodyParameter));
             HttpResponseMessage responseMessage = null;
 
             switch (verb)
@@ -43,8 +43,7 @@ namespace HergBot.RestClient.Http
                     throw new NotImplementedException($"HTTP Verb not implemented: {verb.ToString()}");
             }
 
-            //string responseBody = await responseMessage.Content.ReadAsStringAsync();
-            string responseBody = string.Empty;
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
             return new HttpResponse(
                 fullRequestUrl,
                 responseMessage.StatusCode,
