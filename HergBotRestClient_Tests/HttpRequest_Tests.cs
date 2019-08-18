@@ -17,8 +17,6 @@ namespace HergBot.RestClient_Tests
     {
         private const string VALID_URL = "http://www.fake.url";
 
-        private const string VALID_AUTH_TOKEN = "1234567890";
-
         private const string TEST_RESPONSE = "{\"response\": \"test\"}";
 
         private const string TEST_KEY = "test_key";
@@ -33,7 +31,7 @@ namespace HergBot.RestClient_Tests
         public void SetUp()
         {
             _mockHttpClient = new Mock<IHttpClient>();
-            _testRequest = new HttpRequest(_mockHttpClient.Object, VALID_AUTH_TOKEN, VALID_URL);
+            _testRequest = new HttpRequest(_mockHttpClient.Object, VALID_URL);
         }
 
         [Test]

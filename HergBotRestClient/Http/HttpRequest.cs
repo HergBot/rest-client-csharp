@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace HergBot.RestClient.Http
@@ -12,10 +10,9 @@ namespace HergBot.RestClient.Http
 
         private string _requestUrl;
 
-        public HttpRequest(IHttpClient client, string bearerToken, string url)
+        public HttpRequest(IHttpClient client, string url)
         {
             _httpClient = client;
-            _httpClient.SetBearerToken(bearerToken);
             _requestUrl = url;
         }
 
