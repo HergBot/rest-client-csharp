@@ -2,7 +2,7 @@
 
 namespace HergBot.RestClient
 {
-    public class HergBotRestClient
+    public class HergBotRestClient : IRestClient
     {
         private IHttpClient _client;
 
