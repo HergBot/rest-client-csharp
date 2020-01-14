@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using HergBot.RestClient.Http;
 
 using Moq;
 using NUnit.Framework;
+
+using HergBot.RestClient.Http;
 
 namespace HergBot.RestClient_Tests
 {
@@ -22,6 +19,8 @@ namespace HergBot.RestClient_Tests
         private const string TEST_KEY = "test_key";
 
         private const string TEST_VALUE = "test_value";
+
+        private const string REFUSED_ERROR = "Connection Refused";
 
         private Mock<IHttpClient> _mockHttpClient;
 
@@ -98,9 +97,20 @@ namespace HergBot.RestClient_Tests
         }
 
         [Test]
-        public async Task Send_PatchRequest_ReturnsResponse()
+        public void Send_PatchRequest_ThrowsNotImplemented()
         {
-            Assert.ThrowsAsync<NotImplementedException>(() => _testRequest.Send(HttpVerb.PATCH));
+            Assert.ThrowsAsync<NotImplementedException>(async () => await _testRequest.Send(HttpVerb.PATCH));
+        }
+
+        [Test]
+        public async Task Send_RefusedRequest_ReturnsError()
+        {
+            _mockHttpClient.Setup(x => x.GetAsync(It.IsAny<string>()))
+                .ThrowsAsync(new HttpRequestException(REFUSED_ERROR));
+            HttpResponse response = await _testRequest.Send(HttpVerb.GET);
+            Assert.IsFalse(response.Success);
+            Assert.AreEqual(HttpStatusCode.InternalServerError, response.Status);
+            Assert.AreEqual(REFUSED_ERROR, response.Response);
         }
 
         private void MockResponse(HttpVerb verb, HttpStatusCode status, string response)

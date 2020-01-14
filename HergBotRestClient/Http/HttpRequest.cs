@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using HergBot.Utilities.ExceptionUtilities;
+
 namespace HergBot.RestClient.Http
 {
     public class HttpRequest
@@ -21,25 +23,37 @@ namespace HergBot.RestClient.Http
             string fullRequestUrl = $"{_requestUrl}{ConstructParameterString(urlParameter)}";
             HttpContent content = new StringContent(ConstructParameterString(bodyParameter));
             HttpResponseMessage responseMessage = null;
-
-            switch (verb)
+            try
             {
-                case HttpVerb.DELETE:
-                    responseMessage = await _httpClient.DeleteAsync(fullRequestUrl);
-                    break;
-                case HttpVerb.GET:
-                    responseMessage = await _httpClient.GetAsync(fullRequestUrl);
-                    break;
-                case HttpVerb.POST:
-                    responseMessage = await _httpClient.PostAsync(fullRequestUrl, content);
-                    break;
-                case HttpVerb.PUT:
-                    responseMessage = await _httpClient.PutAsync(fullRequestUrl, content);
-                    break;
-                default:
-                    throw new NotImplementedException($"HTTP Verb not implemented: {verb.ToString()}");
+                switch (verb)
+                {
+                    case HttpVerb.DELETE:
+                        responseMessage = await _httpClient.DeleteAsync(fullRequestUrl);
+                        break;
+                    case HttpVerb.GET:
+                        responseMessage = await _httpClient.GetAsync(fullRequestUrl);
+                        break;
+                    case HttpVerb.POST:
+                        responseMessage = await _httpClient.PostAsync(fullRequestUrl, content);
+                        break;
+                    case HttpVerb.PUT:
+                        responseMessage = await _httpClient.PutAsync(fullRequestUrl, content);
+                        break;
+                    default:
+                        throw new NotImplementedException($"HTTP Verb not implemented: {verb.ToString()}");
+                }
             }
-
+            catch (HttpRequestException ex)
+            {
+                string error = ExceptionUtilities.GetAllExceptionMessages(ex);
+                return new HttpResponse(
+                    fullRequestUrl,
+                    System.Net.HttpStatusCode.InternalServerError,
+                    error,
+                    verb
+                );
+            }
+            
             string responseBody = await responseMessage.Content.ReadAsStringAsync();
             return new HttpResponse(
                 fullRequestUrl,
