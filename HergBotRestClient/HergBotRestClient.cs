@@ -32,6 +32,7 @@ namespace HergBot.RestClient
         /// </summary>
         /// <param name="apiUrl">The URL to perform the request on.</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL is null or invalid.</exception>
         public HttpResponse Get(string apiUrl)
         {
             HttpRequest getRequest = new HttpRequest(_client, apiUrl);
@@ -47,6 +48,8 @@ namespace HergBot.RestClient
         /// <param name="apiUrl">The URL to perform the request on.</param>
         /// <param name="uidParam">The Unique ID (i.e. the thing after the /).</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL and UID are null or the
+        /// URL is invalid.</exception>
         public HttpResponse Get(string apiUrl, UniqueIdParameter uidParam)
         {
             HttpRequest getRequest = new HttpRequest(_client, apiUrl);
@@ -60,6 +63,8 @@ namespace HergBot.RestClient
         /// <param name="apiUrl">The URL to perform the request on.</param>
         /// <param name="queryParam">The query parameters.</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL and query parameter are
+        /// null or the URL is invalid.</exception>
         public HttpResponse Get(string apiUrl, QueryParameter queryParam)
         {
             HttpRequest getRequest = new HttpRequest(_client, apiUrl);
@@ -74,11 +79,12 @@ namespace HergBot.RestClient
         /// <param name="uidParam">The Unique ID (i.e. the thing after the /).</param>
         /// <param name="body">A JSON body with additional details.</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL is null or invalid.</exception>
         public HttpResponse Post(string apiUrl, UniqueIdParameter uidParam, JsonBodyParameter body)
         {
-            HttpRequest getRequest = new HttpRequest(_client, apiUrl);
+            HttpRequest postRequest = new HttpRequest(_client, apiUrl);
             _client.SetBearerToken(_authToken);
-            return getRequest.Send(HttpVerb.POST, uidParam, body).Result;
+            return postRequest.Send(HttpVerb.POST, uidParam, body).Result;
         }
 
         /// <summary>
@@ -87,11 +93,12 @@ namespace HergBot.RestClient
         /// <param name="apiUrl">The URL to perform the request on.</param>
         /// <param name="body">A JSON body with additional details.</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL is null or invalid.</exception>
         public HttpResponse Put(string apiUrl, JsonBodyParameter body)
         {
-            HttpRequest getRequest = new HttpRequest(_client, apiUrl);
+            HttpRequest putRequest = new HttpRequest(_client, apiUrl);
             _client.SetBearerToken(_authToken);
-            return getRequest.Send(HttpVerb.PUT, null, body).Result;
+            return putRequest.Send(HttpVerb.PUT, null, body).Result;
         }
 
         /// <summary>
@@ -100,11 +107,13 @@ namespace HergBot.RestClient
         /// <param name="apiUrl">The URL to perform the request on.</param>
         /// <param name="uidParam">The Unique ID (i.e. the thing after the /).</param>
         /// <returns>The HTTP Response information.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when the URL is null or invalid or when the
+        /// operation has already been received by the server.</exception>
         public HttpResponse Delete(string apiUrl, UniqueIdParameter uidParam)
         {
-            HttpRequest getRequest = new HttpRequest(_client, apiUrl);
+            HttpRequest deleteRequest = new HttpRequest(_client, apiUrl);
             _client.SetBearerToken(_authToken);
-            return getRequest.Send(HttpVerb.DELETE, uidParam).Result;
+            return deleteRequest.Send(HttpVerb.DELETE, uidParam).Result;
         }
     }
 }

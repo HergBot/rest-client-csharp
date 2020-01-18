@@ -113,6 +113,14 @@ namespace HergBot.RestClient_Tests
             Assert.AreEqual(REFUSED_ERROR, response.Response);
         }
 
+        [Test]
+        public void Send_NullUrlRequest_ThrowsInvalidOperation()
+        {
+            IHttpClient client = new RestClient.Http.HttpClientHandler();
+            HttpRequest request = new HttpRequest(client, null);
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await request.Send(HttpVerb.GET));
+        }
+
         private void MockResponse(HttpVerb verb, HttpStatusCode status, string response)
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage(status);

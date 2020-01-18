@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>HergBot.RestClient</PackageId>
+    <Authors>Justin</Authors>
+    <Company>HergBot</Company>
+    <Product>HergBot.RestClient</Product>
+    <Description>A library for communicating with RESTful API's.</Description>
+    <RepositoryUrl>https://github.com/HergBot/rest-client-csharp</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageReleaseNotes>The initial release of the package.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
